@@ -1,0 +1,218 @@
+Microsoft Windows [Version 10.0.22000.434]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\sanje_crlv28m>mysql -u root -p
+Enter password: ***********
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 24
+Server version: 8.0.28 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2022, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+
+mysql> CREATE DATABASE task;
+Query OK, 1 row affected (0.23 sec)
+
+mysql> USE task;
+Database changed
+mysql> CREATE TABLE salespeople(Snum INT,
+    -> Sname VARCHAR(30) UNIQUE,
+    -> City VARCHAR(20),
+    -> Comm INT,
+    -> PRIMARY KEY(SNUM));
+Query OK, 0 rows affected (1.93 sec)
+
+mysql> INSERT INTO salespeople VALUES
+    -> (1001,"Peel","London",12),
+    -> (1002,"Serres","Sanjose",13),
+    -> (1004,"Motika","London",11),
+    -> (1007,"Rifkin","Barcelona",15),
+    -> (1003,"Axelrod","Newyork",10);
+Query OK, 5 rows affected (0.19 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM salespeople;
++------+---------+-----------+------+
+| Snum | Sname   | City      | Comm |
++------+---------+-----------+------+
+| 1001 | Peel    | London    |   12 |
+| 1002 | Serres  | Sanjose   |   13 |
+| 1003 | Axelrod | Newyork   |   10 |
+| 1004 | Motika  | London    |   11 |
+| 1007 | Rifkin  | Barcelona |   15 |
++------+---------+-----------+------+
+5 rows in set (0.05 sec)
+
+mysql> CREATE TABLE customers(Cnum INT,
+    -> Cname VARCHAR(30),
+    -> City VARCHAR(30) NOT NULL,
+    -> Snum INT,
+    -> PRIMARY KEY(Cnum),
+    -> FOREIGN KEY(Snum) REFERENCES salespeople(Snum));
+Query OK, 0 rows affected (2.24 sec)
+
+mysql> INSERT INTO customers VALUES
+    -> (2001,"Hoffman","London",1001),
+    -> (2002,"Giovanni","Rome",1003),
+    -> (2003,"Liu","Sanjose",1002),
+    -> (2004,"Grass","Berlin",1002),
+    -> (2006,"Clemens","London",1001),
+    -> (2008,"Cisneros","Sanjose",1007),
+    -> (2007,"Pereira","Rome",1004);
+Query OK, 7 rows affected (0.16 sec)
+Records: 7  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM customers;
++------+----------+---------+------+
+| Cnum | Cname    | City    | Snum |
++------+----------+---------+------+
+| 2001 | Hoffman  | London  | 1001 |
+| 2002 | Giovanni | Rome    | 1003 |
+| 2003 | Liu      | Sanjose | 1002 |
+| 2004 | Grass    | Berlin  | 1002 |
+| 2006 | Clemens  | London  | 1001 |
+| 2007 | Pereira  | Rome    | 1004 |
+| 2008 | Cisneros | Sanjose | 1007 |
++------+----------+---------+------+
+7 rows in set (0.00 sec)
+
+mysql> CREATE TABLE orders(Onum INT,
+    -> Amt FLOAT,
+    -> Odate DATE,
+    -> Cnum INT,
+    -> Snum INT,
+    -> PRIMARY KEY(Onum),
+    -> FOREIGN KEY (Cnum) REFERENCES customers(Cnum),
+    -> FOREIGN KEY (Snum) REFERENCES salespeople(Snum));
+Query OK, 0 rows affected (2.42 sec)
+
+mysql> INSERT INTO orders VALUES
+    -> (3001,18.69,"1990-10-3",2008,1007),
+    -> (3003,767.19,"1990-10-3",2001,1001),
+    -> (3002,1900.10,"1990-10-3",2007,1004),
+    -> (3005,5160.45,"1990-10-3",2003,1002),
+    -> (3006,1098.16,"1990-10-3",2008,1007),
+    -> (3009,1713.23,"1990-10-4",2002,1003),
+    -> (3007,75.75,"1990-10-4",2004,1002),
+    -> (3008,4273.00,"1990-10-5",2006,1001),
+    -> (3010,1309.95,"1990-10-6",2004,1002),
+    -> (3011,9891.88,"1990-10-6",2006,1001);
+Query OK, 10 rows affected (0.27 sec)
+Records: 10  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM orders;
++------+---------+------------+------+------+
+| Onum | Amt     | Odate      | Cnum | Snum |
++------+---------+------------+------+------+
+| 3001 |   18.69 | 1990-10-03 | 2008 | 1007 |
+| 3002 |  1900.1 | 1990-10-03 | 2007 | 1004 |
+| 3003 |  767.19 | 1990-10-03 | 2001 | 1001 |
+| 3005 | 5160.45 | 1990-10-03 | 2003 | 1002 |
+| 3006 | 1098.16 | 1990-10-03 | 2008 | 1007 |
+| 3007 |   75.75 | 1990-10-04 | 2004 | 1002 |
+| 3008 |    4273 | 1990-10-05 | 2006 | 1001 |
+| 3009 | 1713.23 | 1990-10-04 | 2002 | 1003 |
+| 3010 | 1309.95 | 1990-10-06 | 2004 | 1002 |
+| 3011 | 9891.88 | 1990-10-06 | 2006 | 1001 |
++------+---------+------------+------+------+
+10 rows in set (0.00 sec)
+
+mysql> SELECT * FROM salespeople WHERE BINARY Sname LIKE "A%";
++------+---------+---------+------+
+| Snum | Sname   | City    | Comm |
++------+---------+---------+------+
+| 1003 | Axelrod | Newyork |   10 |
++------+---------+---------+------+
+1 row in set, 1 warning (0.05 sec)
+
+mysql> SELECT * FROM salespeople WHERE BINARY Sname LIKE "a%";
+Empty set, 1 warning (0.00 sec)
+
+mysql> SELECT COUNT(Sname) FROM salespeople WHERE Sname LIKE "A%";
++--------------+
+| COUNT(Sname) |
++--------------+
+|            1 |
++--------------+
+1 row in set (0.09 sec)
+
+mysql> SELECT COUNT(Sname) FROM salespeople WHERE BINARY Sname LIKE "a%";
++--------------+
+| COUNT(Sname) |
++--------------+
+|            0 |
++--------------+
+1 row in set, 1 warning (0.00 sec)
+
+mysql> SELECT salespeople.Sname,orders.Amt FROM salespeople
+    -> INNER JOIN orders ON salespeople.Snum = orders.Snum
+    -> WHERE Amt>2000;
++--------+---------+
+| Sname  | Amt     |
++--------+---------+
+| Serres | 5160.45 |
+| Peel   |    4273 |
+| Peel   | 9891.88 |
++--------+---------+
+3 rows in set (0.05 sec)
+
+mysql> SELECT * FROM salespeople WHERE City = "Newyork";
++------+---------+---------+------+
+| Snum | Sname   | City    | Comm |
++------+---------+---------+------+
+| 1003 | Axelrod | Newyork |   10 |
++------+---------+---------+------+
+1 row in set (0.00 sec)
+
+mysql> SELECT COUNT(City) AS City_Name FROM salespeople WHERE City = "Newyork";
++-----------+
+| City_Name |
++-----------+
+|         1 |
++-----------+
+1 row in set (0.00 sec)
+
+mysql> SELECT * FROM salespeople WHERE City IN ("London","Paris");
++------+--------+--------+------+
+| Snum | Sname  | City   | Comm |
++------+--------+--------+------+
+| 1001 | Peel   | London |   12 |
+| 1004 | Motika | London |   11 |
++------+--------+--------+------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT salespeople.Sname,COUNT(orders.Onum) AS "Numbers of Orders",orders.Odate FROM salespeople
+    -> INNER JOIN orders ON salespeople.Snum = orders. Snum GROUP BY salespeople.Sname;
++---------+-------------------+------------+
+| Sname   | Numbers of Orders | Odate      |
++---------+-------------------+------------+
+| Axelrod |                 1 | 1990-10-04 |
+| Motika  |                 1 | 1990-10-03 |
+| Peel    |                 3 | 1990-10-03 |
+| Rifkin  |                 2 | 1990-10-03 |
+| Serres  |                 3 | 1990-10-03 |
++---------+-------------------+------------+
+5 rows in set (0.06 sec)
+
+mysql> SELECT salespeople.Sname,orders.Onum,orders.Odate FROM salespeople INNER JOIN orders ON salespeople.Snum = orders.Snum;
++---------+------+------------+
+| Sname   | Onum | Odate      |
++---------+------+------------+
+| Axelrod | 3009 | 1990-10-04 |
+| Motika  | 3002 | 1990-10-03 |
+| Peel    | 3003 | 1990-10-03 |
+| Peel    | 3008 | 1990-10-05 |
+| Peel    | 3011 | 1990-10-06 |
+| Rifkin  | 3001 | 1990-10-03 |
+| Rifkin  | 3006 | 1990-10-03 |
+| Serres  | 3005 | 1990-10-03 |
+| Serres  | 3007 | 1990-10-04 |
+| Serres  | 3010 | 1990-10-06 |
++---------+------+------------+
+10 rows in set (0.00 sec)
